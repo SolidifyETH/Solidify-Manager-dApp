@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import Soul from 'classes/Soul';
 import SoulList from 'components/soul/SoulList';
+import DashboardCardList from 'components/DashboardCardList';
 import { GAME_ROLE, SOUL_TYPE } from 'constants/contracts';
 import useDao from 'hooks/useDao';
 import useError from 'hooks/useError';
@@ -70,7 +71,7 @@ export default function GameSouls({ game, sx }: any) {
   if (game) {
     return (
       <Box sx={{ sm: 12, ...sx }}>
-        <SoulList souls={souls} roles={soulRoles} />
+        <DashboardCardList data={souls} roles={soulRoles} />
       </Box>
     );
   }

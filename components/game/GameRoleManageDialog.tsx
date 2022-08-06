@@ -1,20 +1,8 @@
-import { Save } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  Stack,
-} from '@mui/material';
-import { MuiForm5 as Form } from '@rjsf/material-ui';
+import { capitalize } from 'lodash';
+import { JSONSchema7 } from 'json-schema';
 import { GAME_ROLE } from 'constants/contracts';
 import useDao from 'hooks/useDao';
-import useError from 'hooks/useError';
-import useToast from 'hooks/useToast';
-import { JSONSchema7 } from 'json-schema';
-import { capitalize } from 'lodash';
-import { useState } from 'react';
+import ManageDialog from 'components/ManageDialog';
 
 /**
  * Fix to support enum names in the schema.
@@ -31,12 +19,7 @@ declare module 'json-schema' {
  * A dialog for assign or remove DAO role for a specified soul.
  */
 export default function GameRoleManageDialog({ dao, isClose, onClose }: any) {
-  const { handleError } = useError();
-  const { showToastSuccess } = useToast();
   const { assignRoleToSoul, removeRoleToSoul } = useDao();
-  const [formData, setFormData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(!isClose);
 
   const schema: JSONSchema7 = {
     type: 'object',
@@ -66,68 +49,19 @@ export default function GameRoleManageDialog({ dao, isClose, onClose }: any) {
     },
   };
 
-  async function close() {
-    setFormData({});
-    setIsLoading(false);
-    setIsOpen(false);
-    onClose();
-  }
+  const getFormAction = (data: any) =>
+    data.action === 'assignRole' ? assignRoleToSoul : removeRoleToSoul;
 
-  async function submit({ formData }: any) {
-    try {
-      setFormData(formData);
-      setIsLoading(true);
-      if (formData.action === 'assignRole') {
-        await assignRoleToSoul(dao.id, formData.soulId, formData.roleName);
-      } else {
-        await removeRoleToSoul(dao.id, formData.soulId, formData.roleName);
-      }
-      showToastSuccess('Success! Data will be updated soon');
-      close();
-    } catch (error: any) {
-      handleError(error, true);
-      setIsLoading(false);
-    }
-  }
+  const dialogProps = {
+    title: 'Manage Roles',
+    actionLabel: 'Submit',
+    formState: {},
+    isClose,
+    onClose,
+    schema,
+    submit: (data: any) =>
+      getFormAction(data)(dao.id, data.soulId, data.roleName),
+  };
 
-  return (
-    <Dialog
-      open={isOpen}
-      onClose={isLoading ? null : onClose}
-      maxWidth="xs"
-      fullWidth
-    >
-      <DialogTitle sx={{ pb: 0 }}>Manage Roles</DialogTitle>
-      <DialogContent>
-        <Form
-          schema={schema}
-          formData={formData}
-          onSubmit={submit}
-          disabled={isLoading}
-        >
-          <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-            {isLoading ? (
-              <LoadingButton
-                loading
-                loadingPosition="start"
-                startIcon={<Save />}
-                variant="outlined"
-              >
-                Processing
-              </LoadingButton>
-            ) : (
-              <>
-                <Button variant="contained" type="submit">
-                  Submit
-                </Button>
-                <Button variant="outlined" onClick={onClose}>
-                  Cancel
-                </Button>
-              </>
-            )}
-          </Stack>
-        </Form>
-      </DialogContent>
-    </Dialog>
-  );
+  return <ManageDialog {...dialogProps} />;
 }

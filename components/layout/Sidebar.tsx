@@ -81,6 +81,7 @@ export default function Sidebar({ links = [], isOpen, toggler }: any) {
                 minWidth: 0,
                 mr: isOpen ? 3 : 'auto',
                 justifyContent: 'center',
+                color: '#FE6B8B',
               }}
             >
               {icon}

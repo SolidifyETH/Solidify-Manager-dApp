@@ -8,7 +8,7 @@ import useDao from 'hooks/useDao';
 // import useError from 'hooks/useError';
 // import useToast from 'hooks/useToast';
 import { useContext, useEffect, useState } from 'react';
-import GameManageDialog from './GameManageDialog';
+import DaoManageDialog from '../dao/DaoManageDialog';
 import GameRoleManageDialog from './GameRoleManageDialog';
 
 /**
@@ -35,7 +35,7 @@ export default function GameAdminActions({ game: dao, sx }: any) {
           size="small"
           variant="outlined"
           onClick={() =>
-            showDialog?.(<GameManageDialog dao={dao} onClose={closeDialog} />)
+            showDialog?.(<DaoManageDialog dao={dao} onClose={closeDialog} />)
           }
         >
           Edit

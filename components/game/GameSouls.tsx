@@ -1,6 +1,5 @@
 import { Box } from '@mui/material';
 import Soul from 'classes/Soul';
-import SoulList from 'components/soul/SoulList';
 import DashboardCardList from 'components/DashboardCardList';
 import { GAME_ROLE, SOUL_TYPE } from 'constants/contracts';
 import useDao from 'hooks/useDao';

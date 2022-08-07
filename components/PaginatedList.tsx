@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box, Pagination, Typography } from '@mui/material';
-import DashboardCardList from './DashboardCardList';
+import ListComponent from './ListComponent';
 
 type TPaginatedList = {
   baseRoute: string;
@@ -40,29 +40,18 @@ export default function PaginatedList({
     data && setCurrentPage(page);
   }
 
-  return (
-    <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box>
-          <Typography variant="h5">{title}</Typography>
-          <Typography variant="subtitle1">{subtitle}</Typography>
-        </Box>
-        {!!renderActions && renderActions}
-      </Box>
-      <DashboardCardList
-        baseRoute={baseRoute}
-        dataAccessor={getCardContent}
-        data={data}
-      />
-      <Box sx={wrapperStyle}>
-        <Pagination
-          color="primary"
-          count={currentPageCount}
-          onChange={(_, page) => loadWithPagination(page)}
-          page={currentPage}
-          sx={{ mt: { xs: 2, md: 0 } }}
-        />
-      </Box>
-    </>
-  );
+  const listProps = {
+    baseRoute,
+    subtitle,
+    title,
+    renderActions,
+    getCardContent,
+    loading: false,
+    items: data,
+    currentPage,
+    pageChanged: loadWithPagination,
+    first,
+  };
+
+  return <ListComponent {...listProps} />;
 }

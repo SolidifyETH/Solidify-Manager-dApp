@@ -1,8 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { Box, Pagination, Typography } from '@mui/material';
-import DashboardCardList from './DashboardCardList';
 import { APP_CONFIGS } from 'constants';
+import ListComponent from './PaginatedList/ListComponent';
 
 type TPaginatedListGQ = {
   query: any;
@@ -61,31 +60,18 @@ export default function PaginatedListGQ({
     data && setCurrentPage(page);
   }
 
-  return (
-    <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box>
-          <Typography variant="h5">{title}</Typography>
-          <Typography variant="subtitle1">{subtitle}</Typography>
-        </Box>
-        {!!renderActions && renderActions}
-      </Box>
-      <DashboardCardList
-        loading={loading}
-        baseRoute={baseRoute}
-        dataAccessor={getCardContent}
-        data={items}
-      />
-      <Box sx={wrapperStyle}>
-        <Pagination
-          color="primary"
-          // count={currentPageCount}
-          count={items?.length < first ? currentPage : currentPage + 1}
-          onChange={(_, page) => pageChanged(page)}
-          page={currentPage}
-          sx={{ mt: { xs: 2, md: 0 } }}
-        />
-      </Box>
-    </>
-  );
+  const listProps = {
+    baseRoute,
+    subtitle,
+    title,
+    renderActions,
+    getCardContent,
+    loading,
+    items,
+    currentPage,
+    pageChanged,
+    first,
+  };
+
+  return <ListComponent {...listProps} />;
 }
